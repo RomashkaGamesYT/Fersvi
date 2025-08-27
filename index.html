@@ -3,231 +3,107 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Festival Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+<title>Festik Chat</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: 'Roboto', sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+    body { background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    
+    .chat-container { width: 100%; max-width: 480px; height: 85vh; background: white; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.15); display: flex; flex-direction: column; overflow: hidden; }
+    
+    .chat-header { background: #ff5252; color: white; padding: 15px 20px; font-size: 1.4rem; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+    
+    .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f9f9f9; }
+    
+    .message { max-width: 70%; padding: 10px 15px; border-radius: 20px; animation: fadeIn 0.3s; word-wrap: break-word; }
+    .message.user { align-self: flex-end; border-bottom-right-radius: 5px; }
+    .message.bot { align-self: flex-start; background: #e0e0e0; color: #333; border-bottom-left-radius: 5px; }
+    
+    @keyframes fadeIn { from {opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+    
+    .chat-input { display: flex; padding: 10px 15px; border-top: 1px solid #ddd; gap: 10px; background: white; }
+    .chat-input input[type="text"] { flex: 1; padding: 10px 15px; border-radius: 25px; border: 1px solid #ccc; outline: none; font-size: 1rem; }
+    .chat-input button { background: #ff5252; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 500; transition: 0.3s; }
+    .chat-input button:hover { background: #ff7979; }
+    .chat-input select { border-radius: 25px; border: 1px solid #ccc; padding: 8px 12px; outline: none; }
 
-    body {
-        background: #f0f2f5;
-        color: #333;
-    }
-
-    header {
-        background: #ff5252;
-        color: white;
-        padding: 15px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: relative;
-    }
-
-    header h1 {
-        font-size: 1.6rem;
-        letter-spacing: 1px;
-    }
-
-    nav ul {
-        list-style: none;
-        display: flex;
-        gap: 20px;
-        transition: all 0.3s ease;
-    }
-
-    nav ul li {
-        cursor: pointer;
-        position: relative;
-    }
-
-    nav ul li:hover::after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: white;
-        border-radius: 2px;
-    }
-
-    .menu-toggle {
-        display: none;
-        flex-direction: column;
-        cursor: pointer;
-        z-index: 10;
-    }
-
-    .menu-toggle span {
-        height: 3px;
-        width: 25px;
-        background: white;
-        margin-bottom: 4px;
-        border-radius: 2px;
-        transition: 0.3s;
-    }
-
-    main {
-        padding: 20px;
-        max-width: 900px;
-        margin: auto;
-    }
-
-    .add-event, .filter-event {
-        margin-bottom: 20px;
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-    }
-
-    input, textarea {
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        flex: 1;
-    }
-
-    button {
-        background: #ff5252;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    button:hover {
-        background: #ff7979;
-    }
-
-    .event-card {
-        background: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        opacity: 0;
-        transform: translateY(20px);
-        animation: fadeIn 0.4s forwards;
-    }
-
-    .event-card h2 {
-        margin-bottom: 5px;
-        font-size: 1.3rem;
-    }
-
-    .event-card p {
-        font-size: 0.95rem;
-        color: #666;
-    }
-
-    @keyframes fadeIn {
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Мобильная версия */
-    @media (max-width: 768px) {
-        nav ul {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            background: #ff5252;
-            position: absolute;
-            top: 60px;
-            right: 0;
-            padding: 15px;
-            border-radius: 8px 0 0 8px;
-        }
-
-        nav ul.active {
-            display: flex;
-            animation: slideIn 0.3s forwards;
-        }
-
-        @keyframes slideIn {
-            from {opacity: 0; transform: translateX(20px);}
-            to {opacity: 1; transform: translateX(0);}
-        }
-
-        .menu-toggle {
-            display: flex;
-        }
-    }
+    .settings { display: flex; gap: 10px; align-items: center; }
+    .emoji-btn { cursor: pointer; font-size: 1.3rem; background: transparent; border: none; }
+    
+    @media(max-width: 480px) { .chat-container { height: 90vh; border-radius: 10px; } .chat-header { font-size: 1.2rem; } }
 </style>
 </head>
 <body>
 
-<header>
-    <h1>Festival</h1>
-    <div class="menu-toggle" onclick="toggleMenu()">
-        <span></span>
-        <span></span>
-        <span></span>
+<div class="chat-container">
+    <div class="chat-header">
+        Festik Chat
+        <div class="settings">
+            <select id="userColor">
+                <option value="#ff5252">Красный</option>
+                <option value="#4caf50">Зелёный</option>
+                <option value="#2196f3">Синий</option>
+                <option value="#ff9800">Оранжевый</option>
+            </select>
+            <button class="emoji-btn" onclick="addEmoji('😊')">😊</button>
+            <button class="emoji-btn" onclick="addEmoji('😂')">😂</button>
+            <button class="emoji-btn" onclick="addEmoji('❤️')">❤️</button>
+        </div>
     </div>
-    <nav>
-        <ul id="nav-links">
-            <li>Главная</li>
-            <li>События</li>
-            <li>Контакты</li>
-        </ul>
-    </nav>
-</header>
-
-<main>
-    <div class="add-event">
-        <input type="text" id="event-name" placeholder="Название события">
-        <input type="date" id="event-date">
-        <button onclick="addEvent()">Добавить</button>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Введите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
     </div>
-
-    <div class="filter-event">
-        <input type="text" id="search-name" placeholder="Поиск по названию" oninput="filterEvents()">
-        <input type="date" id="search-date" onchange="filterEvents()">
-    </div>
-
-    <div id="events-list">
-        <!-- События будут здесь -->
-    </div>
-</main>
+</div>
 
 <script>
-    const eventsList = document.getElementById('events-list');
-    const navLinks = document.getElementById('nav-links');
-    let events = [];
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const userColorSelect = document.getElementById('userColor');
 
-    function toggleMenu() {
-        navLinks.classList.toggle('active');
+    function sendMessage() {
+        const text = messageInput.value.trim();
+        if(!text) return;
+
+        addMessage(text, 'user', userColorSelect.value);
+        messageInput.value = '';
+
+        setTimeout(() => {
+            addMessage(generateBotResponse(text), 'bot');
+        }, 500);
     }
 
-    function addEvent() {
-        const name = document.getElementById('event-name').value.trim();
-        const date = document.getElementById('event-date').value;
-
-        if(!name || !date) {
-            alert("Заполните оба поля!");
-            return;
-        }
-
-        const event = {name, date};
-        events.push(event);
-        renderEvents(events);
-
-        // Очистка полей
-        document.getElementById('event-name').value = '';
-        document.getElementById('event-date').value = '';
+    function addMessage(text, type, color=null) {
+        const message = document.createElement('div');
+        message.classList.add('message', type);
+        message.textContent = text;
+        if(type === 'user' && color) message.style.background = color;
+        chatMessages.appendChild(message);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function renderEvents(list) {
-        eventsList.innerHTML = '';
-        list.forEach(ev => {
-            const card = document.createElement('div');
-            card.class
+    function generateBotResponse(text) {
+        const responses = [
+            "Интересно! 🤔",
+            "Расскажи подробнее.",
+            "Ха-ха! 😂",
+            "Супер!",
+            "Я тебя понял.",
+            "Это звучит круто! 😎"
+        ];
+        return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    function addEmoji(emoji) {
+        messageInput.value += emoji;
+        messageInput.focus();
+    }
+
+    messageInput.addEventListener('keypress', function(e){
+        if(e.key === 'Enter') sendMessage();
+    });
+</script>
+
+</body>
+</html>
