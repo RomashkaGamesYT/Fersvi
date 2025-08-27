@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vers Design Chat</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .chat-container {
+            width: 400px;
+            max-width: 90%;
+            background-color: #fff;
+            border: 2px solid #0088cc;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+        .messages {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #e6f2ff;
+            border-radius: 5px;
+        }
+        .message {
+            margin: 5px 0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: slideIn 0.4s forwards;
+        }
+        .message.user {
+            background-color: #0088cc;
+            color: white;
+            text-align: right;
+        }
+        .message.bot {
+            background-color: #ccc;
+            text-align: left;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        input[type="text"] {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 70px;
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #006699;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vers Design Chat</h1>
+    <div class="chat-container">
+        <div class="messages" id="chatMessages"></div>
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Напиши сообщение...">
+            <button onclick="sendMessage()">Отправить</button>
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender);
+            messageDiv.innerText = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput');
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, 'user');
+            userInput.value = '';
+
+            // Бот-ответ с небольшой задержкой
+            setTimeout(() => {
+                addMessage('Привет! Вы написали: ' + text, 'bot');
+            }, 500);
+        }
+
+        // Отправка по Enter
+        document.getElementById('userInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>
